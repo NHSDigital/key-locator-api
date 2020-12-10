@@ -24,3 +24,6 @@ release:
 
 clean:
 	rm -rf dist
+
+check-licenses:
+	echo Check Licences
