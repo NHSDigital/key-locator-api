@@ -1,0 +1,74 @@
+<ProxyEndpoint name="default">
+  <PreFlow>
+    <Request>
+      <Step>
+        <Name>SpikeArrest</Name>
+      </Step>
+      <Step>
+        <Name>Quota</Name>
+      </Step>
+    </Request>
+  </PreFlow>
+  <Flows>
+    <Flow name="JkuEndpoint">
+      <Request>
+        <Step>
+          <Name>AccessEntity.GetAppDetails</Name>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetJwksUrl</Name>
+        </Step>
+        <Step>
+          <Name>AssignMessage.GenerateJkuResponse</Name>
+        </Step>
+      </Request>
+      <Condition>
+        proxy.pathsuffix MatchesPath "/jku" AND request.verb == "GET"
+      </Condition>
+    </Flow>
+    <Flow name="JwksEndpoint">
+      <Request>
+        <Step>
+          <Name>AccessEntity.GetAppDetails</Name>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetJwksUrl</Name>
+        </Step>
+      </Request>
+      <Condition>
+        proxy.pathsuffix MatchesPath "/jwks" AND request.verb == "GET"
+      </Condition>
+    </Flow>
+    <Flow name="AddPayloadToPing">
+      <Response>
+        <Step>
+          <Name>AssignMessage.AddPayloadToPing</Name>
+        </Step>
+      </Response>
+      <Condition>
+        proxy.pathsuffix MatchesPath "/_ping" AND (request.verb = "GET" OR request.verb = "HEAD")
+      </Condition>
+    </Flow>
+  </Flows>
+  <HTTPProxyConnection>
+    <BasePath>{{ SERVICE_BASE_PATH }}</BasePath>
+    <VirtualHost>secure</VirtualHost>
+  </HTTPProxyConnection>
+  <RouteRule name="jwks">
+    <Condition>proxy.pathsuffix MatchesPath "/jwks" AND request.verb == "GET"</Condition>
+    <TargetEndpoint>jwks</TargetEndpoint>
+  </RouteRule>
+  <RouteRule name="default"/>
+  <DefaultFaultRule>
+    <Step>
+      <Name>AssignMessage.CatchallErrorMessage</Name>
+    </Step>
+  </DefaultFaultRule>
+  <PostClientFlow>
+    <Response>
+      <Step>
+        <Name>FlowCallout.LogToSplunk</Name>
+      </Step>
+    </Response>
+  </PostClientFlow>
+</ProxyEndpoint>

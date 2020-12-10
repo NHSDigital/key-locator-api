@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ExtractVariables async="false" continueOnError="false" enabled="true" name="ExtractVariables.GetJwksUrl">
+  <Source>AccessEntity.AccessEntity.GetAppDetails</Source>
+  <VariablePrefix>app</VariablePrefix>
+  <XMLPayload>
+    <Variable name="jwksUrl" type="string">
+      <XPath>/App/Attributes/Attribute[Name="jwks-resource-url"]/Value</XPath>
+    </Variable>
+  </XMLPayload>
+</ExtractVariables>

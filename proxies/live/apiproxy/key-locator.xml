@@ -1,0 +1,4 @@
+<APIProxy name="key-locator">
+  <!-- This is the root of the application -->
+  <Description>Proxy which returns JWKS information given a client ID.</Description>
+</APIProxy>
