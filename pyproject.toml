@@ -1,0 +1,46 @@
+[project]
+python = "^3.8"
+
+
+[tool.poetry]
+name = "apim-definitions"
+version = "0.0.1-alpha"
+description = "Key Locator API Definitions"
+
+license = "MIT"
+
+authors = [
+    #TODO add authors
+]
+
+readme = 'README.md'
+
+repository = "https://github.com/NHSDigital/key-locator-api"
+homepage = ""
+
+keywords = ["healthcare", "uk", "nhs"] #TODO add additional keywords
+
+
+[tool.poetry.dependencies]
+python = "^3.8"
+pyyaml = "^5.2"
+docopt = "^0.6.2"
+jsonpath-rw = "^1.4.0"
+semver = "^2.9.0"
+gitpython = "^3.0.5"
+
+
+[tool.poetry.dev-dependencies]
+flake8 = "^3.7.9"
+black = "^19.10b0"
+pip-licenses = "^2.0.1"
+jinja2 = "^2.11.1"
+requests = "2.1.0"
+
+
+[tool.poetry.scripts]
+
+
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
