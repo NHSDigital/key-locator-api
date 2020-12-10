@@ -1,0 +1,78 @@
+# This is an OpenAPI Specification (https://swagger.io/specification/)
+# for the Signing Service
+# owned by NHS Digital (https://digital.nhs.uk/)
+openapi: 3.0.0
+info:
+  title: Key Locator
+  version: "{VERSION}"
+  contact:
+    name: Key Locator
+    url: "https://digital.nhs.uk/developer/help-and-support"
+    email: "api.management@nhs.net"
+  description: |
+    ## Overview
+    TODO
+servers:
+  - url: "https://int.api.service.nhs.uk/key-locator"
+    description: "Integration test"
+tags:
+  - name: keys
+paths:
+  /jku:
+    get:
+      operationId: get-jku
+      tags:
+        - keys
+      summary: Get a JKU (JSON Web Key Set URL) given a client ID
+      description: |-
+        ## Overview
+        Get a JKU (JSON Web Key Set URL) given a client ID
+      parameters:
+        - $ref: "#/components/parameters/clientId"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: string
+              examples:
+                success:
+                  value: "https://www.example.com/jwks"
+  /jwks:
+    get:
+      operationId: get-jwks
+      tags:
+        - keys
+      summary: Get a JWKS (JSON Web Key Set) given a client ID
+      description: |-
+        ## Overview
+        Get a JWKS (JSON Web Key Set) given a client ID
+      parameters:
+        - $ref: "#/components/parameters/clientId"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              # TODO - add schema
+              examples:
+                success:
+                  value:
+                    keys:
+                      - kty: "RSA"
+                        e: "AQAB"
+                        use: "sig"
+                        kid: "test-1"
+                        alg: "RS512"
+                        n: "jkoDdApw2M5J2iHKBpU3Yw33DXXqwIxsmYq4S2hauUG30iqb2Dw2pmnKs2SRb5tJ1YXVoxPGp3uPWLj2WP9qlL2nFa4P9v4WzD4065_6ln2jMHT8rzqPvSt_UDxAJffkeViQY32Sve5HKA_GA_hxb0PBmc5vyMFx49ea1rYExvVMdnwHy8FA7OpLbdXJzqZr3aATUQzuKQIp-LtOXhYiWUjuq9Xvrjl1ke9yjRCuOayNFdO7vUyoLAtV3Vecz4mGsQjmthgxIEe7a18Ct7yCBPrOCXhTxvCkaH9F8owYJDRwXfQsyIh4c4xFaQ6mQEGj3dzm40utd6mySdsZeTr9EtlOZukbBFm0OmVEoeA7Jw5WaMs_mCGsz92p5iZFsrt09ylLaVDVfeX01eppPPkwqWSKkF-D6dAk1vdf_lJr9X5T3wUMPgYwVzSScZlu3JHcC1p0y-cDao64m88XD1611yL3TiR5TbwycUpddh9nD5RMp_bQxEPV_tbGpkheHetuXQGW9hpTkHiu4cUZ0aVKKeMIoSlukW6ktDvZ_YDGq1zIFh31Oq5xuMcB1swg2UWNaMBALuJLPwseIO-AJR6iMW4Ezn34ZecoDPrszK0xKFEVNoZ5xg8_W69leF0OJs_YRJQ_xaX31Z6VBZB48gBqa5omi05YSPCQbfQi9wDYuj8"
+components:
+  parameters:
+    clientId:
+      in: query
+      name: Client ID
+      description: The ID of the client whose JWKS you want to locate
+      schema:
+        type: string
+        format: base64
+      required: true
