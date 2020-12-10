@@ -1,32 +1,38 @@
 SHELL=/bin/bash -euo pipefail -O globstar
 
-.PHONY: install build test publish release clean
+.PHONY: install test publish release clean
 
 install: install-python
+	npm --prefix=specification install
 
 install-python:
 	poetry install
 
-build: build-proxies
+test:
+	npm --prefix=specification run test
+
+publish:
+	echo Publish
+
+release: ensure-dist-exists build-proxies build-spec
+
+ensure-dist-exists:
+	mkdir -p dist
 
 build-proxies:
 	mkdir -p dist/proxies/live
 	cp -Rv proxies/live/apiproxy dist/proxies/live
 
-test:
-	echo Test
-
-publish:
-	echo Publish
-
-release:
-	mkdir -p dist
+build-spec:
+	npm --prefix=specification run build-spec
+	cp specification/dist/key-locator-api.json dist
 
 clean:
 	rm -rf dist
+	rm -rf specification/dist
 
 check-licenses:
-	echo Check Licences
+	npm --prefix=specification run check-licenses
 
 lint:
-	echo Lint
+	npm --prefix=specification run lint

@@ -4,5 +4,4 @@ variables:
   service_base_path: key-locator
   product_display_name: Key Locator API
   product_description: " "
-  # TODO - add OpenAPI spec
-  # spec_file: key-locator-api.json
+  spec_file: key-locator-api.json
