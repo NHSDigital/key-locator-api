@@ -2,10 +2,16 @@ SHELL=/bin/bash -euo pipefail -O globstar
 
 .PHONY: install build test publish release clean
 
-install:
-	echo Install
+install: install-python
+
+install-python:
+	poetry install
 
 build: build-proxies
+
+build-proxies:
+	mkdir -p dist/proxies/live
+	cp -Rv proxies/live/apiproxy dist/proxies/live
 
 test:
 	echo Test
@@ -18,7 +24,3 @@ release:
 
 clean:
 	rm -rf dist
-
-build-proxies:
-	mkdir -p dist/proxies/live
-	cp -Rv proxies/live/apiproxy dist/proxies/live
