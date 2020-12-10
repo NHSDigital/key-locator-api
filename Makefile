@@ -27,3 +27,6 @@ clean:
 
 check-licenses:
 	echo Check Licences
+
+lint:
+	echo Lint
