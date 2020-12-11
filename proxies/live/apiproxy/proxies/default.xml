@@ -18,30 +18,54 @@
     <Flow name="JkuEndpoint">
       <Request>
         <Step>
+          <Name>RaiseFault.400BadRequest</Name>
+          <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
+        </Step>
+        <Step>
           <Name>AccessEntity.GetAppDetails</Name>
         </Step>
         <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
+        </Step>
+        <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>app.jwksUrl = null</Condition>
         </Step>
         <Step>
           <Name>AssignMessage.GenerateJkuResponse</Name>
         </Step>
       </Request>
       <Condition>
-        proxy.pathsuffix MatchesPath "/jku" AND request.verb == "GET"
+        proxy.pathsuffix MatchesPath "/jku" AND request.verb = "GET"
       </Condition>
     </Flow>
     <Flow name="JwksEndpoint">
       <Request>
         <Step>
+          <Name>RaiseFault.400BadRequest</Name>
+          <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
+        </Step>
+        <Step>
           <Name>AccessEntity.GetAppDetails</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
         </Step>
         <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
         </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>app.jwksUrl = null</Condition>
+        </Step>
       </Request>
       <Condition>
-        proxy.pathsuffix MatchesPath "/jwks" AND request.verb == "GET"
+        proxy.pathsuffix MatchesPath "/jwks" AND request.verb = "GET"
       </Condition>
     </Flow>
     <Flow name="AddPayloadToPing">
@@ -60,15 +84,10 @@
     <VirtualHost>secure</VirtualHost>
   </HTTPProxyConnection>
   <RouteRule name="jwks">
-    <Condition>proxy.pathsuffix MatchesPath "/jwks" AND request.verb == "GET"</Condition>
+    <Condition>proxy.pathsuffix MatchesPath "/jwks" AND request.verb = "GET"</Condition>
     <TargetEndpoint>jwks</TargetEndpoint>
   </RouteRule>
   <RouteRule name="default"/>
-  <DefaultFaultRule>
-    <Step>
-      <Name>AssignMessage.CatchallErrorMessage</Name>
-    </Step>
-  </DefaultFaultRule>
   <PostClientFlow>
     <Response>
       <Step>

@@ -39,6 +39,7 @@ paths:
               schema:
                 type: string
                 description: "A JWKS (JSON Web Key Set) URL"
+                example: "https://www.example.com/jwks"
               examples:
                 success:
                   value: "https://www.example.com/jwks"
@@ -104,4 +105,5 @@ components:
       schema:
         type: string
         format: base64
+        example: "qvP9NoQcOVqKrXEdtLv8B0j7p5VmjPDd"
       required: true
