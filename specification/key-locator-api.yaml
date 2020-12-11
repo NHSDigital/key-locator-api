@@ -11,6 +11,8 @@ info:
     email: "api.management@nhs.net"
   description: |
     ## Overview
+    Use this API to look up a JWKS (JSON Web Key Set) URL, or the JWKS itself, for a given Apigee client ID.
+
     TODO
 servers:
   - url: "https://int.api.service.nhs.uk/key-locator"
@@ -23,10 +25,10 @@ paths:
       operationId: get-jku
       tags:
         - keys
-      summary: Get a JKU (JSON Web Key Set URL) given a client ID
+      summary: Get a JWKS (JSON Web Key Set) URL given a client ID
       description: |-
         ## Overview
-        Get a JKU (JSON Web Key Set URL) given a client ID
+        Get a JWKS (JSON Web Key Set) URL given a client ID
       parameters:
         - $ref: "#/components/parameters/clientId"
       responses:
@@ -36,6 +38,7 @@ paths:
             text/plain:
               schema:
                 type: string
+                description: "A JWKS (JSON Web Key Set) URL"
               examples:
                 success:
                   value: "https://www.example.com/jwks"
@@ -55,7 +58,33 @@ paths:
           description: Success
           content:
             application/json:
-              # TODO - add schema
+              schema:
+                type: object
+                description: "A JWKS (JSON Web Key Set)"
+                properties:
+                  keys:
+                    type: array
+                    description: "An array of JWK values"
+                    items:
+                      type: object
+                      description: "A JWK (JSON Web Key)"
+                      properties:
+                        kty:
+                          type: string
+                          description: "Key Type - identifies the cryptographic algorithm family used with the key, such as \"RSA\" or \"EC\""
+                          example: "RSA"
+                        use:
+                          type: string
+                          description: "Public Key Use - identifies the intended use of the public key"
+                          example: "sig"
+                        alg:
+                          type: string
+                          description: "Algorithm - identifies the algorithm intended for use with the key"
+                          example: "RS512"
+                        kid:
+                          type: string
+                          description: "Key ID - used to match a specific key, for instance, to choose among a set of keys within a JWK Set during key rollover"
+                          example: "test-1"
               examples:
                 success:
                   value:
@@ -71,7 +100,7 @@ components:
     clientId:
       in: query
       name: Client ID
-      description: The ID of the client whose JWKS you want to locate
+      description: An Apigee client ID
       schema:
         type: string
         format: base64
