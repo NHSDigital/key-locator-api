@@ -18,10 +18,22 @@
     <Flow name="JkuEndpoint">
       <Request>
         <Step>
+          <Name>RaiseFault.400BadRequest</Name>
+          <Condition>request.queryparam.clientId == null</Condition>
+        </Step>
+        <Step>
           <Name>AccessEntity.GetAppDetails</Name>
         </Step>
         <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetAppDetails == null</Condition>
+        </Step>
+        <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>app.jwksUrl == null</Condition>
         </Step>
         <Step>
           <Name>AssignMessage.GenerateJkuResponse</Name>
@@ -34,10 +46,22 @@
     <Flow name="JwksEndpoint">
       <Request>
         <Step>
+          <Name>RaiseFault.400BadRequest</Name>
+          <Condition>request.queryparam.clientId == null</Condition>
+        </Step>
+        <Step>
           <Name>AccessEntity.GetAppDetails</Name>
         </Step>
         <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetAppDetails == null</Condition>
+        </Step>
+        <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>app.jwksUrl == null</Condition>
         </Step>
       </Request>
       <Condition>
