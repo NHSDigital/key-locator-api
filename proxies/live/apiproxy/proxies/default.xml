@@ -19,7 +19,7 @@
       <Request>
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
-          <Condition>request.queryparam.clientId = null</Condition>
+          <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
         </Step>
         <Step>
           <Name>AccessEntity.GetAppDetails</Name>
@@ -47,7 +47,7 @@
       <Request>
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
-          <Condition>request.queryparam.clientId = null</Condition>
+          <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
         </Step>
         <Step>
           <Name>AccessEntity.GetAppDetails</Name>
@@ -88,11 +88,6 @@
     <TargetEndpoint>jwks</TargetEndpoint>
   </RouteRule>
   <RouteRule name="default"/>
-<!--  <DefaultFaultRule>-->
-<!--    <Step>-->
-<!--      <Name>AssignMessage.CatchallErrorMessage</Name>-->
-<!--    </Step>-->
-<!--  </DefaultFaultRule>-->
   <PostClientFlow>
     <Response>
       <Step>
