@@ -86,16 +86,36 @@ paths:
                           type: string
                           description: "Key ID - used to match a specific key, for instance, to choose among a set of keys within a JWK Set during key rollover"
                           example: "test-1"
+                        n:
+                          type: string
+                          description: "Public modulus (present for RSA public keys)"
+                          example: "jkoDdApw2M5J2iHKBpU3Yw33DXXqwIxsmYq4S2hauUG30iqb2Dw2pmnKs2SRb5tJ1YXVoxPGp3uPWLj2WP9qlL2nFa4P9v4WzD4065_6ln2jMHT8rzqPvSt_UDxAJffkeViQY32Sve5HKA_GA_hxb0PBmc5vyMFx49ea1rYExvVMdnwHy8FA7OpLbdXJzqZr3aATUQzuKQIp-LtOXhYiWUjuq9Xvrjl1ke9yjRCuOayNFdO7vUyoLAtV3Vecz4mGsQjmthgxIEe7a18Ct7yCBPrOCXhTxvCkaH9F8owYJDRwXfQsyIh4c4xFaQ6mQEGj3dzm40utd6mySdsZeTr9EtlOZukbBFm0OmVEoeA7Jw5WaMs_mCGsz92p5iZFsrt09ylLaVDVfeX01eppPPkwqWSKkF-D6dAk1vdf_lJr9X5T3wUMPgYwVzSScZlu3JHcC1p0y-cDao64m88XD1611yL3TiR5TbwycUpddh9nD5RMp_bQxEPV_tbGpkheHetuXQGW9hpTkHiu4cUZ0aVKKeMIoSlukW6ktDvZ_YDGq1zIFh31Oq5xuMcB1swg2UWNaMBALuJLPwseIO-AJR6iMW4Ezn34ZecoDPrszK0xKFEVNoZ5xg8_W69leF0OJs_YRJQ_xaX31Z6VBZB48gBqa5omi05YSPCQbfQi9wDYuj8"
+                        e:
+                          type: string
+                          description: "Public exponent (present for RSA public keys)"
+                          example: "AQAB"
+                        crv:
+                          type: string
+                          description: "Curve (present for EC public keys)"
+                          example: "P-256"
+                        x:
+                          type: string
+                          description: "X coordinate (present for EC public keys)"
+                          example: "MKBCTNIcKUSDii11ySs3526iDZ8AiTo7Tu6KPAqv7D4"
+                        y:
+                          type: string
+                          description: "Y coordinate (present for EC public keys)"
+                          example: "4Etl6SRW2YiLUrN5vfvVHuhp7x8PxltmWWlbbM4IFyM"
               examples:
                 success:
                   value:
                     keys:
                       - kty: "RSA"
-                        e: "AQAB"
                         use: "sig"
-                        kid: "test-1"
                         alg: "RS512"
+                        kid: "test-1"
                         n: "jkoDdApw2M5J2iHKBpU3Yw33DXXqwIxsmYq4S2hauUG30iqb2Dw2pmnKs2SRb5tJ1YXVoxPGp3uPWLj2WP9qlL2nFa4P9v4WzD4065_6ln2jMHT8rzqPvSt_UDxAJffkeViQY32Sve5HKA_GA_hxb0PBmc5vyMFx49ea1rYExvVMdnwHy8FA7OpLbdXJzqZr3aATUQzuKQIp-LtOXhYiWUjuq9Xvrjl1ke9yjRCuOayNFdO7vUyoLAtV3Vecz4mGsQjmthgxIEe7a18Ct7yCBPrOCXhTxvCkaH9F8owYJDRwXfQsyIh4c4xFaQ6mQEGj3dzm40utd6mySdsZeTr9EtlOZukbBFm0OmVEoeA7Jw5WaMs_mCGsz92p5iZFsrt09ylLaVDVfeX01eppPPkwqWSKkF-D6dAk1vdf_lJr9X5T3wUMPgYwVzSScZlu3JHcC1p0y-cDao64m88XD1611yL3TiR5TbwycUpddh9nD5RMp_bQxEPV_tbGpkheHetuXQGW9hpTkHiu4cUZ0aVKKeMIoSlukW6ktDvZ_YDGq1zIFh31Oq5xuMcB1swg2UWNaMBALuJLPwseIO-AJR6iMW4Ezn34ZecoDPrszK0xKFEVNoZ5xg8_W69leF0OJs_YRJQ_xaX31Z6VBZB48gBqa5omi05YSPCQbfQi9wDYuj8"
+                        e: "AQAB"
 components:
   parameters:
     clientId:

@@ -14,10 +14,7 @@ test:
 publish:
 	echo Publish
 
-release: ensure-dist-exists build-proxies build-spec
-
-ensure-dist-exists:
-	mkdir -p dist
+release: build-proxies build-spec
 
 build-proxies:
 	mkdir -p dist/proxies/live
