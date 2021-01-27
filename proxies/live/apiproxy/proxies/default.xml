@@ -22,6 +22,16 @@
           <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
         </Step>
         <Step>
+          <Name>AccessEntity.GetAppDetails</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetApiProductName</Name>
+        </Step>
+        <Step>
           <Name>AccessEntity.GetApiProductDetails</Name>
         </Step>
         <Step>
@@ -34,13 +44,6 @@
         <Step>
           <Name>RaiseFault.404NotFound</Name>
           <Condition>app.environment != environment.name</Condition>
-        </Step>
-        <Step>
-          <Name>AccessEntity.GetAppDetails</Name>
-        </Step>
-        <Step>
-          <Name>RaiseFault.404NotFound</Name>
-          <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
         </Step>
         <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
@@ -64,6 +67,16 @@
           <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
         </Step>
         <Step>
+          <Name>AccessEntity.GetAppDetails</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetApiProductName</Name>
+        </Step>
+        <Step>
           <Name>AccessEntity.GetApiProductDetails</Name>
         </Step>
         <Step>
@@ -76,13 +89,6 @@
         <Step>
           <Name>RaiseFault.404NotFound</Name>
           <Condition>app.environment != environment.name</Condition>
-        </Step>
-        <Step>
-          <Name>AccessEntity.GetAppDetails</Name>
-        </Step>
-        <Step>
-          <Name>RaiseFault.404NotFound</Name>
-          <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
         </Step>
         <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>

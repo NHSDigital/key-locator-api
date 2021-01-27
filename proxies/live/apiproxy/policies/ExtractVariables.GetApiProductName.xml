@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ExtractVariables async="false" continueOnError="false" enabled="true" name="ExtractVariables.GetApiProductName">
+    <Source>AccessEntity.AccessEntity.GetAppDetails</Source>
+    <VariablePrefix>app</VariablePrefix>
+    <XMLPayload>
+        <Variable name="apiProductName" type="string">
+            <XPath>/App/Credentials/Credential[ConsumerKey=$request.queryparam.clientId]/ApiProducts/ApiProduct[Status="approved"]/Name</XPath>
+        </Variable>
+    </XMLPayload>
+</ExtractVariables>
