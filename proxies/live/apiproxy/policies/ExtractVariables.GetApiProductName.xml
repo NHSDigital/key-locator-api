@@ -4,7 +4,7 @@
     <VariablePrefix>app</VariablePrefix>
     <XMLPayload>
         <Variable name="apiProductName" type="string">
-            <XPath>/App/Credentials/Credential[ConsumerKey=$request.queryparam.clientId]/ApiProducts/ApiProduct[Status="approved"]/Name</XPath>
+            <XPath>/App[Status="approved"]/Credentials/Credential[ConsumerKey=$request.queryparam.clientId and Status="approved"]/ApiProducts/ApiProduct[Status="approved"]/Name</XPath>
         </Variable>
     </XMLPayload>
 </ExtractVariables>
