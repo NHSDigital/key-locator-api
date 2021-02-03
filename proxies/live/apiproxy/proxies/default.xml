@@ -29,6 +29,23 @@
           <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
         </Step>
         <Step>
+          <Name>ExtractVariables.GetApiProductName</Name>
+        </Step>
+        <Step>
+          <Name>AccessEntity.GetApiProductDetails</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetApiProductDetails = null</Condition>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetApiProductEnvironment</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>app.environment != environment.name</Condition>
+        </Step>
+        <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
         </Step>
         <Step>
@@ -55,6 +72,23 @@
         <Step>
           <Name>RaiseFault.404NotFound</Name>
           <Condition>AccessEntity.AccessEntity.GetAppDetails = null</Condition>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetApiProductName</Name>
+        </Step>
+        <Step>
+          <Name>AccessEntity.GetApiProductDetails</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>AccessEntity.AccessEntity.GetApiProductDetails = null</Condition>
+        </Step>
+        <Step>
+          <Name>ExtractVariables.GetApiProductEnvironment</Name>
+        </Step>
+        <Step>
+          <Name>RaiseFault.404NotFound</Name>
+          <Condition>app.environment != environment.name</Condition>
         </Step>
         <Step>
           <Name>ExtractVariables.GetJwksUrl</Name>
