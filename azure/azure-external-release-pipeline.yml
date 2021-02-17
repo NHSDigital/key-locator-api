@@ -8,6 +8,7 @@ resources:
     - repository: common
       type: github
       name: NHSDigital/api-management-utils
+      ref: refs/heads/edge
       endpoint: NHSDigital
   pipelines:
     - pipeline: build_pipeline
@@ -29,7 +30,6 @@ extends:
     product_description: ${{ variables.product_description }}
     spec_file: ${{ variables.spec_file }}
     enable_monitoring: true
-    disable_status: true
     apigee_deployments:
       - environment: int
         make_spec_visible: true
