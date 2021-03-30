@@ -22,7 +22,7 @@ def event_loop():
 @pytest.fixture(scope='module')
 def apigee_root_url():
     return "https://api.service.nhs.uk" if ENVIRONMENT == "prod" \
-        else f"https://{ENVIRONMENT}.api.service.nhs.uk"\
+        else f"https://{ENVIRONMENT}.api.service.nhs.uk"
 
 
 @pytest.fixture(scope='module')
