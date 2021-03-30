@@ -35,7 +35,7 @@ extends:
         displayName: Install smoke test dependencies
       - bash: |
           export APIGEE_API_TOKEN="$(secret.AccessToken)"
-          poetry run pytest -v --junitxml=test-report.xml --reruns 2 --reruns-delay 1
+          poetry run pytest -v --junitxml=test-report.xml
         workingDirectory: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/tests
         displayName: Run smoke tests
       - task: PublishTestResults@2
