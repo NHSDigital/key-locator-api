@@ -6,9 +6,10 @@ import requests
 from api_test_utils.apigee_api_apps import ApigeeApiDeveloperApps
 from api_test_utils.apigee_api_products import ApigeeApiProducts
 
-TEST_JWKS_URL = "https://raw.githubusercontent.com/NHSDigital/identity-service-jwks" \
+JWKS_URL = "https://raw.githubusercontent.com/NHSDigital/identity-service-jwks" \
     "/main/jwks/internal-dev/278af795-6884-42dd-a713-f2b03927abb5.json"
-TEST_ENVIRONMENT = os.environ["APIGEE_ENVIRONMENT"]
+ENVIRONMENT = os.environ["APIGEE_ENVIRONMENT"]
+BASE_PATH = os.environ["SERVICE_BASE_PATH"]
 
 
 @pytest.fixture(scope="module")
@@ -20,13 +21,18 @@ def event_loop():
 
 @pytest.fixture(scope='module')
 def apigee_root_url():
-    return "https://api.service.nhs.uk" if TEST_ENVIRONMENT == "prod" \
-        else f"https://{TEST_ENVIRONMENT}.api.service.nhs.uk"
+    return "https://api.service.nhs.uk" if ENVIRONMENT == "prod" \
+        else f"https://{ENVIRONMENT}.api.service.nhs.uk"\
+
+
+@pytest.fixture(scope='module')
+def service_root_url(apigee_root_url):
+    return f"{apigee_root_url}/{BASE_PATH}"
 
 
 @pytest.fixture(scope='module')
 def apigee_organization():
-    return "nhsd-prod" if TEST_ENVIRONMENT in ["int", "prod"] else "nhsd-nonprod"
+    return "nhsd-prod" if ENVIRONMENT in ["int", "prod"] else "nhsd-nonprod"
 
 
 @pytest.fixture(scope='module')
@@ -87,7 +93,7 @@ async def test_app_other_environment(test_product_other_environment):
 @pytest.mark.asyncio
 async def add_jwks_url_to_app(test_app: ApigeeApiDeveloperApps):
     await test_app.set_custom_attributes({
-        "jwks-resource-url": TEST_JWKS_URL
+        "jwks-resource-url": JWKS_URL
     })
 
 
@@ -95,7 +101,7 @@ async def add_jwks_url_to_app(test_app: ApigeeApiDeveloperApps):
 @pytest.mark.asyncio
 async def add_jwks_url_to_other_environment_app(test_app: ApigeeApiDeveloperApps):
     await test_app.set_custom_attributes({
-        "jwks-resource-url": TEST_JWKS_URL
+        "jwks-resource-url": JWKS_URL
     })
 
 
@@ -123,13 +129,13 @@ async def add_product_to_other_environment_app(
 @pytest.fixture(scope='module', autouse=True)
 @pytest.mark.asyncio
 async def set_product_environment(test_product: ApigeeApiProducts):
-    await test_product.update_environments([TEST_ENVIRONMENT])
+    await test_product.update_environments([ENVIRONMENT])
 
 
 @pytest.fixture(scope='module', autouse=True)
 @pytest.mark.asyncio
 async def set_other_environment_product_environment(test_product_other_environment: ApigeeApiProducts):
-    other_environment = "internal-dev" if TEST_ENVIRONMENT == "internal-qa" else "internal-qa"
+    other_environment = "internal-dev" if ENVIRONMENT == "internal-qa" else "internal-qa"
     await test_product_other_environment.update_environments([other_environment])
 
 
@@ -141,107 +147,107 @@ async def sleep_before_test():
 
 
 @pytest.mark.asyncio
-async def test_jwks_endpoint_valid_request(apigee_root_url, test_app: ApigeeApiDeveloperApps):
+async def test_jwks_endpoint_valid_request(service_root_url, test_app: ApigeeApiDeveloperApps):
     client_id = test_app.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jwks?clientId={client_id}")
     assert ("keys" in response.json())
 
 
 @pytest.mark.asyncio
-async def test_jwks_endpoint_no_client_id(apigee_root_url):
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks")
+async def test_jwks_endpoint_no_client_id(service_root_url):
+    response = requests.get(f"{service_root_url}/jwks")
     assert response.status_code == 400
 
 
 @pytest.mark.asyncio
-async def test_jwks_endpoint_empty_client_id(apigee_root_url):
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks?clientId=")
+async def test_jwks_endpoint_empty_client_id(service_root_url):
+    response = requests.get(f"{service_root_url}/jwks?clientId=")
     assert response.status_code == 400
 
 
 @pytest.mark.asyncio
-async def test_jwks_endpoint_invalid_client_id(apigee_root_url):
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks?clientId=notAValidClientId")
+async def test_jwks_endpoint_invalid_client_id(service_root_url):
+    response = requests.get(f"{service_root_url}/jwks?clientId=notAValidClientId")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_jwks_endpoint_no_product_subscriptions(
-        apigee_root_url,
+        service_root_url,
         test_app_no_product_subscriptions: ApigeeApiDeveloperApps
 ):
     client_id = test_app_no_product_subscriptions.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jwks?clientId={client_id}")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_jwks_endpoint_no_jwks_url_for_app(
-        apigee_root_url,
+        service_root_url,
         test_app_no_jwks_url: ApigeeApiDeveloperApps
 ):
     client_id = test_app_no_jwks_url.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jwks?clientId={client_id}")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_jwks_endpoint_app_not_for_this_environment(
-        apigee_root_url,
+        service_root_url,
         test_app_other_environment: ApigeeApiDeveloperApps
 ):
     client_id = test_app_other_environment.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jwks?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jwks?clientId={client_id}")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
-async def test_jku_endpoint_valid_request(apigee_root_url, test_app: ApigeeApiDeveloperApps):
+async def test_jku_endpoint_valid_request(service_root_url, test_app: ApigeeApiDeveloperApps):
     client_id = test_app.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jku?clientId={client_id}")
-    assert (response.text == TEST_JWKS_URL)
+    response = requests.get(f"{service_root_url}/jku?clientId={client_id}")
+    assert (response.text == JWKS_URL)
 
 
 @pytest.mark.asyncio
-async def test_jku_endpoint_no_client_id(apigee_root_url):
-    response = requests.get(f"{apigee_root_url}/key-locator/jku")
+async def test_jku_endpoint_no_client_id(service_root_url):
+    response = requests.get(f"{service_root_url}/jku")
     assert response.status_code == 400
 
 
 @pytest.mark.asyncio
-async def test_jku_endpoint_empty_client_id(apigee_root_url):
-    response = requests.get(f"{apigee_root_url}/key-locator/jku?clientId=")
+async def test_jku_endpoint_empty_client_id(service_root_url):
+    response = requests.get(f"{service_root_url}/jku?clientId=")
     assert response.status_code == 400
 
 
 @pytest.mark.asyncio
-async def test_jku_endpoint_invalid_client_id(apigee_root_url):
-    response = requests.get(f"{apigee_root_url}/key-locator/jku?clientId=notAValidClientId")
+async def test_jku_endpoint_invalid_client_id(service_root_url):
+    response = requests.get(f"{service_root_url}/jku?clientId=notAValidClientId")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_jku_endpoint_no_product_subscriptions(
-        apigee_root_url,
+        service_root_url,
         test_app_no_product_subscriptions: ApigeeApiDeveloperApps
 ):
     client_id = test_app_no_product_subscriptions.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jku?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jku?clientId={client_id}")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
-async def test_jku_endpoint_no_jwks_url_for_app(apigee_root_url, test_app_no_jwks_url: ApigeeApiDeveloperApps):
+async def test_jku_endpoint_no_jwks_url_for_app(service_root_url, test_app_no_jwks_url: ApigeeApiDeveloperApps):
     client_id = test_app_no_jwks_url.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jku?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jku?clientId={client_id}")
     assert response.status_code == 404
 
 
 @pytest.mark.asyncio
 async def test_jku_endpoint_app_not_for_this_environment(
-        apigee_root_url,
+        service_root_url,
         test_app_other_environment: ApigeeApiDeveloperApps
 ):
     client_id = test_app_other_environment.client_id
-    response = requests.get(f"{apigee_root_url}/key-locator/jku?clientId={client_id}")
+    response = requests.get(f"{service_root_url}/jku?clientId={client_id}")
     assert response.status_code == 404

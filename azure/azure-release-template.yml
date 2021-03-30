@@ -1,0 +1,46 @@
+parameters:
+  - name: service_name
+    type: string
+  - name: short_service_name
+    type: string
+  - name: service_base_path
+    type: string
+  - name: product_display_name
+    type: string
+  - name: product_description
+    type: string
+  - name: service_base_path_pr
+    type: string
+  - name: spec_file
+    type: string
+  - name: apigee_deployments
+    type: object
+  - name: enable_monitoring
+    type: boolean
+
+extends:
+  template: azure/common/apigee-deployment.yml@common
+  parameters:
+    service_name: ${{ parameters.service_name }}
+    short_service_name: ${{ parameters.short_service_name }}
+    service_base_path: ${{ parameters.service_base_path }}
+    product_display_name: ${{ parameters.product_display_name }}
+    product_description: ${{ parameters.product_description }}
+    spec_file: ${{ parameters.spec_file }}
+    enable_monitoring: ${{ parameters.enable_monitoring }}
+    apigee_deployments: ${{ parameters.apigee_deployments }}
+    post_deploy:
+      - bash: poetry install
+        workingDirectory: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/tests
+        displayName: Install smoke test dependencies
+      - bash: |
+        export APIGEE_API_TOKEN="$(secret.AccessToken)"
+        pytest -v --junitxml=test-report.xml --reruns 2 --reruns-delay 1
+        workingDirectory: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/tests
+        displayName: Run smoke tests
+      - task: PublishTestResults@2
+        condition: always()
+        inputs:
+          testResultsFiles: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/api_tests/test-report.xml
+          failTaskOnFailedTests: true
+        displayName: Publish smoke test results
