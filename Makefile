@@ -14,7 +14,7 @@ test:
 publish:
 	echo Publish
 
-release: build-proxies build-spec
+release: build-proxies build-spec build-smoke-tests
 
 build-proxies:
 	mkdir -p dist/proxies/live
@@ -23,6 +23,9 @@ build-proxies:
 build-spec:
 	npm --prefix=specification run build-spec
 	cp specification/dist/key-locator-api.json dist
+
+build-smoke-tests:
+	cp -Rv tests dist
 
 clean:
 	rm -rf dist

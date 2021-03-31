@@ -25,13 +25,14 @@ variables:
   - template: project.yml
 
 extends:
-  template: azure/common/apigee-deployment.yml@common
+  template: azure-release-template.yml
   parameters:
     service_name: ${{ variables.service_name }}
     short_service_name: ${{ variables.short_service_name }}
     service_base_path: ${{ variables.service_base_path }}
     product_display_name: ${{ variables.product_display_name }}
     product_description: ${{ variables.product_description }}
+    service_base_path_pr: ${{ variables.service_base_path_pr }}
     spec_file: ${{ variables.spec_file }}
     enable_monitoring: true
     apigee_deployments:
