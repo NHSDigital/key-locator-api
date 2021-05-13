@@ -45,15 +45,10 @@ def apigee_organization():
 @pytest.mark.asyncio
 async def test_product(apigee_organization):
     api = ApigeeApiProducts(org_name=apigee_organization)
+    api.environments = [ENVIRONMENT]
     await api.create_new_product()
     yield api
     await api.destroy_product()
-
-
-@pytest.fixture(scope='module', autouse=True)
-@pytest.mark.asyncio
-async def set_product_environment(test_product: ApigeeApiProducts):
-    await test_product.update_environments([ENVIRONMENT])
 
 
 # App with valid configuration
@@ -126,16 +121,11 @@ async def add_jwks_url_to_no_products_app(test_app_no_product_subscriptions: Api
 @pytest.mark.asyncio
 async def test_product_other_environment():
     api = ApigeeApiProducts(org_name="nhsd-nonprod")
+    other_environment = "internal-qa" if ENVIRONMENT == "internal-dev" else "internal-dev"
+    api.environments = [other_environment]
     await api.create_new_product()
     yield api
     await api.destroy_product()
-
-
-@pytest.fixture(scope='module', autouse=True)
-@pytest.mark.asyncio
-async def set_other_environment_product_environment(test_product_other_environment: ApigeeApiProducts):
-    other_environment = "internal-dev" if ENVIRONMENT == "internal-qa" else "internal-qa"
-    await test_product_other_environment.update_environments([other_environment])
 
 
 @pytest.fixture(scope='module')
