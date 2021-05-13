@@ -56,7 +56,10 @@ async def test_product(apigee_organization):
 @pytest.fixture(scope='module')
 @pytest.mark.asyncio
 async def test_app_valid_config(apigee_organization, test_product):
-    api = ApigeeApiDeveloperApps(org_name=apigee_organization)
+    api = ApigeeApiDeveloperApps(
+        org_name=apigee_organization,
+        developer_email=f"apm-testing-{ENVIRONMENT}@nhs.net"
+    )
     await api.create_new_app()
     yield api
     await api.destroy_app()
@@ -81,7 +84,10 @@ async def add_product_to_app(test_product: ApigeeApiProducts, test_app_valid_con
 @pytest.fixture(scope='module')
 @pytest.mark.asyncio
 async def test_app_no_jwks_url(apigee_organization, test_product):
-    api = ApigeeApiDeveloperApps(org_name=apigee_organization)
+    api = ApigeeApiDeveloperApps(
+        org_name=apigee_organization,
+        developer_email=f"apm-testing-{ENVIRONMENT}@nhs.net"
+    )
     await api.create_new_app()
     yield api
     await api.destroy_app()
@@ -101,7 +107,10 @@ async def add_product_to_no_jwks_url_app(
 @pytest.fixture(scope='module')
 @pytest.mark.asyncio
 async def test_app_no_product_subscriptions(apigee_organization):
-    api = ApigeeApiDeveloperApps(org_name=apigee_organization)
+    api = ApigeeApiDeveloperApps(
+        org_name=apigee_organization,
+        developer_email=f"apm-testing-{ENVIRONMENT}@nhs.net"
+    )
     await api.create_new_app()
     yield api
     await api.destroy_app()
@@ -118,10 +127,14 @@ async def add_jwks_url_to_no_products_app(test_app_no_product_subscriptions: Api
 # App subscribed to an API product for a different environment
 
 @pytest.fixture(scope='module')
+def other_environment():
+    return "internal-qa" if ENVIRONMENT == "internal-dev" else "internal-dev"
+
+
+@pytest.fixture(scope='module')
 @pytest.mark.asyncio
-async def test_product_other_environment():
+async def test_product_other_environment(other_environment):
     api = ApigeeApiProducts(org_name="nhsd-nonprod")
-    other_environment = "internal-qa" if ENVIRONMENT == "internal-dev" else "internal-dev"
     api.environments = [other_environment]
     await api.create_new_product()
     yield api
@@ -130,8 +143,11 @@ async def test_product_other_environment():
 
 @pytest.fixture(scope='module')
 @pytest.mark.asyncio
-async def test_app_other_environment(test_product_other_environment):
-    api = ApigeeApiDeveloperApps(org_name="nhsd-nonprod")
+async def test_app_other_environment(test_product_other_environment, other_environment):
+    api = ApigeeApiDeveloperApps(
+        org_name="nhsd-nonprod",
+        developer_email=f"apm-testing-{other_environment}@nhs.net"
+    )
     await api.create_new_app()
     yield api
     await api.destroy_app()
