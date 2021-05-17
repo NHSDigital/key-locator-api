@@ -38,7 +38,7 @@ def service_root_url(apigee_root_url):
 
 @pytest.fixture(scope='module')
 def apigee_organization():
-    return "nhsd-prod" if ENVIRONMENT in ["int", "prod"] else "nhsd-nonprod"
+    return "nhsd-prod" if ENVIRONMENT in ["int", "sandbox", "prod"] else "nhsd-nonprod"
 
 
 @pytest.fixture(scope='module')
@@ -129,9 +129,9 @@ async def add_jwks_url_to_no_products_app(test_app_no_product_subscriptions: Api
 @pytest.fixture(scope='module')
 def other_environment(apigee_organization):
     if apigee_organization == "nhsd-prod":
-        return "prod" if ENVIRONMENT == "int" else "int"
+        return "sandbox" if ENVIRONMENT == "int" else "int"
     else:
-        return "internal-qa" if ENVIRONMENT == "internal-dev" else "internal-dev"
+        return "internal-dev-sandbox" if ENVIRONMENT == "internal-dev" else "internal-dev"
 
 
 @pytest.fixture(scope='module')
