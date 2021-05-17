@@ -128,13 +128,16 @@ async def add_jwks_url_to_no_products_app(test_app_no_product_subscriptions: Api
 
 @pytest.fixture(scope='module')
 def other_environment():
-    return "internal-qa" if ENVIRONMENT == "internal-dev" else "internal-dev"
+    if apigee_organization == "nhsd-prod":
+        return "prod" if ENVIRONMENT == "int" else "int"
+    else:
+        return "internal-qa" if ENVIRONMENT == "internal-dev" else "internal-dev"
 
 
 @pytest.fixture(scope='module')
 @pytest.mark.asyncio
-async def test_product_other_environment(other_environment):
-    api = ApigeeApiProducts(org_name="nhsd-nonprod")
+async def test_product_other_environment(apigee_organization, other_environment):
+    api = ApigeeApiProducts(org_name=apigee_organization)
     api.environments = [other_environment]
     await api.create_new_product()
     yield api
@@ -143,9 +146,9 @@ async def test_product_other_environment(other_environment):
 
 @pytest.fixture(scope='module')
 @pytest.mark.asyncio
-async def test_app_other_environment(test_product_other_environment, other_environment):
+async def test_app_other_environment(apigee_organization, other_environment, test_product_other_environment):
     api = ApigeeApiDeveloperApps(
-        org_name="nhsd-nonprod",
+        org_name=apigee_organization,
         developer_email=f"apm-testing-{other_environment}@nhs.net"
     )
     await api.create_new_app()
