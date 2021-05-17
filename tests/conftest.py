@@ -127,7 +127,7 @@ async def add_jwks_url_to_no_products_app(test_app_no_product_subscriptions: Api
 # App subscribed to an API product for a different environment
 
 @pytest.fixture(scope='module')
-def other_environment():
+def other_environment(apigee_organization):
     if apigee_organization == "nhsd-prod":
         return "prod" if ENVIRONMENT == "int" else "int"
     else:
