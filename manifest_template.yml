@@ -1,0 +1,67 @@
+APIGEE_ENVIRONMENTS:
+  - display_name: Internal Development
+    make_spec_visible: true
+    name: internal-dev
+  - display_name: Internal QA
+    make_spec_visible: true
+    name: internal-qa
+  - display_name: Reference
+    name: ref
+  - display_name: Integration Testing
+    make_spec_visible: true
+    name: int
+    ratelimit: 20ps
+    quota: 1200
+  - display_name: Production
+    name: prod
+    approval_type: manual
+    ratelimit: 20ps             # todo: confirm with Spine team what these should be
+    quota: 1200                 # when ready for live
+    portal_visibility: false    # todo: remove this once ready for live
+
+---
+meta:
+  api:
+    name: key-locator-api
+    guid: 736368fd-3b5c-410e-bf49-85fa1e6e9f87
+    spec_guids: ['459efe11-1009-49d8-89f4-527b0ecc3482']
+  schema_version: 1
+apigee:
+  environments:
+  {% for ENV in APIGEE_ENVIRONMENTS %}
+  {% set API_NAME = 'key-locator-api-' + ENV.name %}
+  {% set API_TITLE = 'Key Locator (' + ENV.display_name + ')' %}
+  {% set API_DESCRIPTION = 'Key Locator - ' + ENV.display_name | lower + ' environment' %}
+- name: {{ ENV.name }}
+  products:
+  {% set PRODUCT_NAME = 'key-locator-api-' + ENV.name %}
+  {% set PRODUCT_TITLE = 'Key Locator ' + ' (' + ENV.display_name + ')' %}
+  {% set PRODUCT_DESCRIPTION = 'Key Locator ' + ' - ' + ENV.display_name | lower + ' environment' %}
+- name: {{ PRODUCT_NAME }}
+  approvalType: {{ ENV.approval_type | default('auto') }}
+  attributes:
+    - name: access
+      value: public
+    - name: ratelimit
+      value: {{ ENV.ratelimit | default('5ps') }}
+  description: {{ PRODUCT_DESCRIPTION }}
+  displayName: {{ PRODUCT_TITLE }}
+  environments: [ {{ ENV.name }} ]
+  proxies:
+    - key-locator-api-{{ ENV.name }}
+
+quota: {{ ENV.quota | default('300') }}
+quotaInterval: '1'
+quotaTimeUnit: minute
+specs:
+  - name: {{ API_NAME }}
+    path: key-locator-api.json
+api_catalog:
+  - edgeAPIProductName: {{ API_NAME }}
+    anonAllowed: true
+    description: {{ API_DESCRIPTION }}
+    requireCallbackUrl: {{ ENV.require_callback_url | default(true) }}
+    title: {{ API_TITLE }}
+    visibility: {{ ENV.make_spec_visible | default(false) }}
+    specId: {{ API_NAME }}
+  {% endfor %}

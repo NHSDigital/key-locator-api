@@ -2,6 +2,7 @@
 # for the Signing Service
 # owned by NHS Digital (https://digital.nhs.uk/)
 openapi: 3.0.0
+x-nhs-api-spec-guid: 459efe11-1009-49d8-89f4-527b0ecc3482
 info:
   title: Key Locator
   version: "{VERSION}"
