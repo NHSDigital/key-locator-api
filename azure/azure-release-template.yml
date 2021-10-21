@@ -5,13 +5,7 @@ parameters:
     type: string
   - name: service_base_path
     type: string
-  - name: product_display_name
-    type: string
-  - name: product_description
-    type: string
   - name: service_base_path_pr
-    type: string
-  - name: spec_file
     type: string
   - name: apigee_deployments
     type: object
@@ -24,23 +18,30 @@ extends:
     service_name: ${{ parameters.service_name }}
     short_service_name: ${{ parameters.short_service_name }}
     service_base_path: ${{ parameters.service_base_path }}
-    product_display_name: ${{ parameters.product_display_name }}
-    product_description: ${{ parameters.product_description }}
-    spec_file: ${{ parameters.spec_file }}
     enable_monitoring: ${{ parameters.enable_monitoring }}
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
+      - bash: |
+          if [ "$(APIGEE_ENVIRONMENT)" == "prod" ]
+          then
+            echo "##vso[task.setvariable variable=run_smoke_tests]false"
+          else
+            echo "##vso[task.setvariable variable=run_smoke_tests]true"
+          fi
+        displayName: Check for smoke tests
       - bash: poetry install
         workingDirectory: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/tests
         displayName: Install smoke test dependencies
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - bash: |
           export APIGEE_API_TOKEN="$(secret.AccessToken)"
           poetry run pytest -v --junitxml=test-report.xml
         workingDirectory: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/tests
         displayName: Run smoke tests
+        condition: and(succeeded(), eq(variables['run_smoke_tests'], 'true'))
       - task: PublishTestResults@2
-        condition: always()
         inputs:
           testResultsFiles: $(Pipeline.Workspace)/s/${{ parameters.service_name }}/$(SERVICE_ARTIFACT_NAME)/tests/test-report.xml
           failTaskOnFailedTests: true
         displayName: Publish smoke test results
+        condition: eq(variables['run_smoke_tests'], 'true')
