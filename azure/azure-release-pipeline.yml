@@ -41,7 +41,8 @@ extends:
           - internal_dev
       - environment: int
         proxy_path: live
-        depends_on: [ ]
+        depends_on:
+          - internal-qa
       - environment: ref
         proxy_path: live
         depends_on:
@@ -49,4 +50,4 @@ extends:
       - environment: prod
         proxy_path: live
         depends_on:
-          - int
+          - ref
