@@ -42,7 +42,7 @@ extends:
       - environment: int
         proxy_path: live
         depends_on:
-          - internal-qa
+          - internal_qa
       - environment: ref
         proxy_path: live
         depends_on:
