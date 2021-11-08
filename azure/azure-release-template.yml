@@ -19,6 +19,7 @@ extends:
     short_service_name: ${{ parameters.short_service_name }}
     service_base_path: ${{ parameters.service_base_path }}
     enable_monitoring: ${{ parameters.enable_monitoring }}
+    enable_status_monitoring: false
     apigee_deployments: ${{ parameters.apigee_deployments }}
     post_deploy:
       - bash: |
