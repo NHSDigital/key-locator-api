@@ -1,13 +1,5 @@
 <ProxyEndpoint name="default">
   <PreFlow>
-    <Request>
-      <Step>
-        <Name>SpikeArrest</Name>
-      </Step>
-      <Step>
-        <Name>Quota</Name>
-      </Step>
-    </Request>
     <Response>
       <Step>
         <Name>AssignMessage.AddCors</Name>
@@ -17,6 +9,12 @@
   <Flows>
     <Flow name="JkuEndpoint">
       <Request>
+        <Step>
+          <Name>SpikeArrest</Name>
+        </Step>
+        <Step>
+          <Name>Quota</Name>
+        </Step>
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
           <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
@@ -62,6 +60,12 @@
     </Flow>
     <Flow name="JwksEndpoint">
       <Request>
+        <Step>
+          <Name>SpikeArrest</Name>
+        </Step>
+        <Step>
+          <Name>Quota</Name>
+        </Step>
         <Step>
           <Name>RaiseFault.400BadRequest</Name>
           <Condition>request.queryparam.clientId = null OR request.queryparam.clientId = ""</Condition>
