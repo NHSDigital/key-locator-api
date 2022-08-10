@@ -3,7 +3,7 @@ SHELL=/bin/bash -euo pipefail -O globstar
 .PHONY: install test publish release clean
 
 install: install-python
-	npm --prefix=specification install
+	npm --prefix=specification install --legacy-peer-deps
 
 install-python:
 	poetry install
