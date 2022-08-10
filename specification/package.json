@@ -4,7 +4,7 @@
   "description": "Key Locator API Specification",
   "scripts": {
     "clean": "rimraf ./dist",
-    "lint": "speccy lint key-locator-api.yaml",
+    "lint": "node_modules/.bin/openapi-generator-cli validate -i key-locator-api.yaml",
     "check-licenses": "license-checker --production --failOn GPL --failOn LGPL",
     "build-spec": "npm run clean && node ./scripts/convert-spec-file.js",
     "start": "npm run build-spec && speccy serve --verbose ./dist/key-locator-api.json"
@@ -12,7 +12,9 @@
   "devDependencies": {
     "js-yaml": "^3.14.0",
     "license-checker": "^25.0.1",
-    "rimraf": "^3.0.2",
-    "speccy": "^0.11.0"
+    "rimraf": "^3.0.2"
+  },
+  "dependencies": {
+    "@openapitools/openapi-generator-cli": "^2.5.1"
   }
 }
